@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#090a0e">
+<title>Wallet LARP</title>
+<style>
+:root{color-scheme:dark;--bg:#090a0e;--panel:#17191f;--muted:#9297a3;--blue:#0a84ff;--line:#2b2e37}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;min-height:100vh}
+.app{max-width:520px;margin:auto;padding:env(safe-area-inset-top) 18px calc(92px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 2px 20px}.top h1{font-size:34px;letter-spacing:-1.2px;margin:0;font-weight:750}.iconbtn{border:0;border-radius:50%;background:#24262d;color:white;width:38px;height:38px;font-size:25px;line-height:1;cursor:pointer}
+.demo{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#ffcf5a;background:#302714;border:1px solid #5a4721;border-radius:9px;padding:7px 10px;margin:0 0 16px;display:inline-block}
+.cards{display:grid;gap:13px}.walletcard{position:relative;overflow:hidden;border:1px solid #ffffff18;border-radius:21px;min-height:174px;padding:18px 19px;box-shadow:0 10px 25px #0005;cursor:pointer;background:linear-gradient(135deg,#272b34,#111319 70%)}.walletcard:before{content:"";position:absolute;width:220px;height:220px;right:-70px;top:-110px;border-radius:50%;background:radial-gradient(circle,#ffffff20,transparent 68%)}.walletcard.blue{background:linear-gradient(125deg,#0956a8,#132d70 56%,#411b67)}.walletcard.green{background:linear-gradient(125deg,#086d4a,#063d38 65%,#102a32)}.walletcard.gold{background:linear-gradient(125deg,#9b7432,#45321b 65%,#211d1b)}.cardhead,.cardbottom,.balance-row{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;gap:10px}.bank{font-size:17px;font-weight:700}.chip{width:31px;height:24px;border-radius:6px;background:linear-gradient(135deg,#f5e6bd,#9c895b);border:1px solid #fff7}.dots{font-size:15px;letter-spacing:2px;color:#e2e5ed;margin-top:24px}.network{font-weight:800;font-style:italic;font-size:17px}.balance-row{margin-top:17px;align-items:end}.small{font-size:12px;color:#e0e2e9b8}.amount{font-size:23px;font-weight:700;letter-spacing:-.5px;margin-top:3px;overflow-wrap:anywhere}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:27px 2px 12px}.sectionhead h2{font-size:21px;margin:0;letter-spacing:-.4px}.linkbtn{color:var(--blue);background:none;border:0;font-size:15px;cursor:pointer}
+.account{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid #ffffff08;border-radius:15px;padding:14px;margin-bottom:9px}.appicon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#242831;font-size:20px}.accountmain{flex:1;min-width:0}.accountmain strong{display:block;font-size:15px}.accountmain span{display:block;font-size:12px;color:var(--muted);margin-top:3px}.accountamount{text-align:right;font-size:14px;font-weight:650;max-width:48%;overflow-wrap:anywhere}.panel{background:var(--panel);border:1px solid #ffffff0c;border-radius:17px;overflow:hidden}.transaction{display:flex;align-items:center;gap:11px;padding:13px 14px;border-bottom:1px solid var(--line)}.transaction:last-child{border-bottom:0}.txicon{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#292c34;font-size:18px}.txname{flex:1;min-width:0}.txname strong{font-size:14px;display:block}.txname small{font-size:12px;color:var(--muted);display:block;margin-top:3px}.txamount{font-size:14px;font-weight:650;white-space:nowrap}.positive{color:#32d583}.negative{color:#f2f2f7}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#101116eF;backdrop-filter:blur(22px);border-top:1px solid #ffffff12;padding:9px 14px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:0;z-index:5}.nav button{background:none;border:0;color:#8e929e;flex:1;max-width:140px;font-size:10px;cursor:pointer;padding:5px}.nav button span{display:block;font-size:21px;margin-bottom:3px}.nav button.active{color:var(--blue)}
+.screen{display:none}.screen.active{display:block}.empty{padding:28px;text-align:center;color:var(--muted)}
+.modalback{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;justify-content:center;z-index:10;padding:12px}.modalback.open{display:flex}.modal{width:100%;max-width:500px;background:#1b1d24;border:1px solid #ffffff15;border-radius:24px 24px 18px 18px;padding:22px 18px 18px;max-height:88vh;overflow:auto}.modal h2{margin:0 0 17px;font-size:23px}.field{margin:13px 0}.field label{display:block;color:#aeb2bd;font-size:13px;margin-bottom:7px}.field input,.field select{width:100%;background:#101116;color:white;border:1px solid #383b45;border-radius:12px;padding:14px;font-size:16px;outline:none}.actions{display:flex;gap:9px;margin-top:18px}.btn{flex:1;border:0;border-radius:13px;padding:14px;font-size:15px;font-weight:650;cursor:pointer}.primary{background:var(--blue);color:white}.secondary{background:#30333c;color:white}.note{font-size:11px;line-height:1.4;color:#8c909c;text-align:center;margin:24px 12px 4px}
+@media(min-width:600px){body{padding-top:18px}.app{border:1px solid #242630;border-radius:32px;min-height:calc(100vh - 36px);padding-bottom:100px}.nav{left:50%;transform:translateX(-50%);width:min(520px,100%);border-radius:0 0 30px 30px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top"><h1 id="pageTitle">Wallet</h1><button class="iconbtn" aria-label="Přidat" onclick="openModal('card')">+</button></header>
+  <section id="home" class="screen active">
+    <div class="cards" id="cards"></div>
+    <div class="sectionhead"><h2>Další karty</h2><button class="linkbtn" onclick="openModal('card')">Přidat</button></div>
+    <div id="accounts"></div>
+    <div class="sectionhead"><h2>Poslední transakce</h2><button class="linkbtn" onclick="showScreen('transactions')">Zobrazit vše</button></div>
+    <div class="panel" id="recent"></div>
+  </section>
+  <section id="transactions" class="screen">
+    <div class="sectionhead"><h2>Historie</h2><button class="linkbtn" onclick="openModal('transaction')">+ Přidat</button></div>
+    <div class="panel" id="allTransactions"></div>
+  </section>
+  <section id="settings" class="screen">
+    <div class="sectionhead"><h2>Nastavení simulace</h2></div>
+    <div class="panel">
+      <div class="transaction"><div class="txicon">💶</div><div class="txname"><strong>Měna</strong><small>Výchozí měna zobrazení</small></div><select id="currency" onchange="render()" style="background:#292c34;color:white;border:0;border-radius:9px;padding:8px"><option value="EUR">EUR €</option><option value="CZK">CZK Kč</option><option value="USD">USD $</option><option value="GBP">GBP £</option></select></div>
+      <div class="transaction"><div class="txicon">✎</div><div class="txname"><strong>Upravit zůstatek</strong><small>Nastav si fiktivní částku</small></div><button class="linkbtn" onclick="openModal('balance')">Upravit</button></div>
+      <div class="transaction"><div class="txicon">↻</div><div class="txname"><strong>Resetovat demo</strong><small>Vrátí ukázková data</small></div><button class="linkbtn" onclick="resetDemo()">Reset</button></div>
+    </div>
+    <p class="note">Roleplay peněženka: zůstatky a transakce nejsou propojené s bankou a nelze s nimi platit.</p>
+  </section>
+</main>
+<nav class="nav">
+  <button class="active" data-screen="home" onclick="showScreen('home')"><span>▣</span>Wallet</button>
+  <button data-screen="transactions" onclick="showScreen('transactions')"><span>↕</span>Transakce</button>
+  <button data-screen="settings" onclick="showScreen('settings')"><span>⚙</span>Nastavení</button>
+</nav>
+<div class="modalback" id="modalback" onclick="if(event.target===this)closeModal()"><div class="modal">
+  <h2 id="modalTitle">Přidat kartu</h2><form id="modalForm">
+    <div id="fields"></div>
+    <div class="actions"><button type="button" class="btn secondary" onclick="closeModal()">Zrušit</button><button class="btn primary" type="submit" id="submitLabel">Uložit</button></div>
+  </form>
+</div></div>
+<script>
+const starter=()=>({cards:[
+{id:1,name:"Visa Infinite",bank:"Privátní účet",last:"4242",balance:1250000,color:"",icon:"▰"},
+{id:2,name:"Apple Cash",bank:"Osobní účet",last:"",balance:25000,color:"green",icon:"●"},
+{id:3,name:"PayPal",bank:"Digitální peněženka",last:"",balance:5000,color:"blue",icon:"P"}
+],transactions:[
+{id:1,name:"Výplata / příjem",date:"Dnes",amount:250000,kind:"in",icon:"↗"},
+{id:2,name:"Apple Store",date:"Včera",amount:-1299,kind:"out",icon:"●"},
+{id:3,name:"Kavárna",date:"16. 10. 2026",amount:-145,kind:"out",icon:"☕"},
+{id:4,name:"Převod",date:"15. 10. 2026",amount:-5000,kind:"out",icon:"↗"}
+]});
+let data;try{data=JSON.parse(localStorage.getItem('walletLarpData'))||starter()}catch(e){data=starter()}
+let mode='card';
+function save(){localStorage.setItem('walletLarpData',JSON.stringify(data))}
+function curr(){return document.getElementById('currency').value||'EUR'}
+function money(n){try{return new Intl.NumberFormat('cs-CZ',{style:'currency',currency:curr(),maximumFractionDigits:2}).format(n)}catch(e){return n.toLocaleString('cs-CZ')+' '+curr()}}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function cardHTML(c,i){return `<article class="walletcard ${esc(c.color||'')}" onclick="editCard(${c.id})"><div class="cardhead"><div class="bank">${esc(c.name)}</div><div class="chip"></div></div><div class="dots">${c.last?'•••• '+esc(c.last):esc(c.bank||'VIRTUÁLNÍ ÚČET')}</div><div class="cardbottom" style="margin-top:13px"><span class="small">Zůstatek</span><span class="network">${c.last?'VISA':''}</span></div><div class="balance-row"><div class="amount">${money(c.balance)}</div><span style="font-size:20px">${esc(c.icon||'')}</span></div></article>`}
+function txHTML(t){return `<div class="transaction"><div class="txicon">${esc(t.icon||'↔')}</div><div class="txname"><strong>${esc(t.name)}</strong><small>${esc(t.date)}</small></div><div class="txamount ${t.amount>=0?'positive':'negative'}">${t.amount>=0?'+':'−'}${money(Math.abs(t.amount))}</div></div>`}
+function render(){document.getElementById('cards').innerHTML=data.cards.slice(0,1).map(cardHTML).join('')||'<div class="empty">Zatím žádné karty</div>';document.getElementById('accounts').innerHTML=data.cards.slice(1).map((c)=>`<div class="account" onclick="editCard(${c.id})"><div class="appicon">${esc(c.icon||'▰')}</div><div class="accountmain"><strong>${esc(c.name)}</strong><span>${esc(c.bank||'Virtuální účet')}</span></div><div class="accountamount">${money(c.balance)}</div></div>`).join('');document.getElementById('recent').innerHTML=data.transactions.slice(0,4).map(txHTML).join('')||'<div class="empty">Žádné transakce</div>';document.getElementById('allTransactions').innerHTML=data.transactions.map(txHTML).join('')||'<div class="empty">Žádné transakce</div>';save()}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));document.getElementById('pageTitle').textContent=({home:'Wallet',transactions:'Transakce',settings:'Nastavení'})[id];render()}
+function openModal(which){mode=which;delete document.getElementById('modalForm').dataset.editId;const title=document.getElementById('modalTitle'),fields=document.getElementById('fields');if(which==='card'){title.textContent='Přidat kartu';fields.innerHTML='<div class="field"><label>Název karty / účtu</label><input name="name" required maxlength="40" placeholder="Např. Premium účet"></div><div class="field"><label>Popisek</label><input name="bank" maxlength="40" placeholder="Osobní účet"></div><div class="field"><label>Zůstatek</label><input name="balance" type="number" step="0.01" value="1000000" required></div><div class="field"><label>Poslední 4 číslice (volitelné)</label><input name="last" inputmode="numeric" maxlength="4" placeholder="4242"></div><div class="field"><label>Styl karty</label><select name="color"><option value="">Černá</option><option value="blue">Modrá</option><option value="green">Zelená</option><option value="gold">Zlatá</option></select></div>'}else if(which==='balance'){title.textContent='Upravit zůstatek';fields.innerHTML='<div class="field"><label>Vyber kartu</label><select name="cardId">'+data.cards.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')+'</select></div><div class="field"><label>Nový zůstatek</label><input name="balance" type="number" step="0.01" value="1000000" required></div>'}else{title.textContent='Přidat transakci';fields.innerHTML='<div class="field"><label>Název</label><input name="name" required maxlength="60" placeholder="Např. Příjem"></div><div class="field"><label>Částka (kladná = příjem, záporná = výdaj)</label><input name="amount" type="number" step="0.01" required placeholder="2500"></div><div class="field"><label>Datum</label><input name="date" value="Dnes" maxlength="30"></div>'}document.getElementById('modalback').classList.add('open')}
+function closeModal(){document.getElementById('modalback').classList.remove('open')}
+function submitModal(e){e.preventDefault();const f=new FormData(e.target);if(mode==='card'){data.cards.push({id:Date.now(),name:f.get('name'),bank:f.get('bank')||'Virtuální účet',balance:Number(f.get('balance'))||0,last:f.get('last'),color:f.get('color'),icon:'▰'})}else if(mode==='balance'){const c=data.cards.find(c=>c.id===Number(f.get('cardId')));if(c)c.balance=Number(f.get('balance'))||0}else{const amount=Number(f.get('amount'));data.transactions.unshift({id:Date.now(),name:f.get('name'),date:f.get('date')||'Dnes',amount,kind:amount>=0?'in':'out',icon:amount>=0?'↗':'↘'});if(data.cards[0])data.cards[0].balance+=amount}closeModal();render()}
+function editCard(id){const c=data.cards.find(x=>x.id===id);if(!c)return;mode='edit';document.getElementById('modalTitle').textContent='Upravit kartu';document.getElementById('fields').innerHTML=`<div class="field"><label>Název</label><input id="editName" maxlength="40" value="${esc(c.name)}" required></div><div class="field"><label>Zůstatek</label><input id="editBalance" type="number" step="0.01" value="${c.balance}" required></div><div class="field"><label>Barva</label><select id="editColor"><option value="" ${!c.color?'selected':''}>Černá</option><option value="blue" ${c.color==='blue'?'selected':''}>Modrá</option><option value="green" ${c.color==='green'?'selected':''}>Zelená</option><option value="gold" ${c.color==='gold'?'selected':''}>Zlatá</option></select></div><button type="button" class="btn secondary" onclick="deleteCard(${id})">Smazat kartu</button>`;document.getElementById('modalForm').dataset.editId=String(id);document.getElementById('modalback').classList.add('open')}
+function deleteCard(id){if(data.cards.length<=1){alert('Nech si alespoň jednu kartu.');return}data.cards=data.cards.filter(c=>c.id!==id);closeModal();render()}
+function resetDemo(){if(confirm('Opravdu chceš obnovit ukázková data?')){data=starter();render()}}
+document.getElementById('modalForm').addEventListener('submit',e=>{
+  if(mode==='edit'){
+    e.preventDefault();
+    const id=Number(e.target.dataset.editId);
+    const c=data.cards.find(x=>x.id===id);
+    if(c){c.name=document.getElementById('editName').value;c.balance=Number(document.getElementById('editBalance').value)||0;c.color=document.getElementById('editColor').value;}
+    delete e.target.dataset.editId;
+    closeModal();render();return;
+  }
+  submitModal(e);
+});render();
+</script>
+</body>
+</html>
